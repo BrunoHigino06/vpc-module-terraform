@@ -37,7 +37,7 @@ resource "aws_subnet" "plublic-subnets" {
     tags = merge(
       var.public-subnets-tags,
       {
-        Name = var.public-subnets.subnets_names[count.index]
+        Name = "Public${count.index + 1}"
       },
       )
     depends_on = [
@@ -45,13 +45,13 @@ resource "aws_subnet" "plublic-subnets" {
     ]
 }
 
-#Nat gateway resouce
+#Nat gateway resouces
 resource "aws_eip" "NatEip" {
   count = length(var.public-subnets.subnets_cidr_block)
   vpc      = true
 
   tags = {
-    Name = "${var.public-subnets.subnets_names[count.index]}_subnet_eip"
+    Name = "Public${count.index + 1}_eip"
   }
 }
 
@@ -61,6 +61,26 @@ resource "aws_nat_gateway" "nat-gw" {
   subnet_id     = aws_subnet.plublic-subnets[count.index].id
 
   tags = var.nat-gw-tags
+
+  depends_on = [
+    aws_eip.NatEip,
+    aws_subnet.plublic-subnets
+  ]
 }
 
 #Private Subnets resource
+resource "aws_subnet" "private-subnets" {
+    count = length(var.private-subnets.subnets_cidr_block)
+    vpc_id     = aws_vpc.vpc.id
+    cidr_block = var.private-subnets.subnets_cidr_block[count.index]
+    availability_zone = var.private-subnets.subnet_az[count.index]
+    tags = merge(
+      var.private-subnets-tags,
+      {
+        Name = "Private${count.index + 1}"
+      },
+      )
+    depends_on = [
+      aws_vpc.vpc
+    ]
+}

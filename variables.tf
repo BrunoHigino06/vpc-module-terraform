@@ -46,7 +46,6 @@ variable "public-subnets" {
   default     = {
     subnets_cidr_block = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
     subnet_az = ["us-east-1a", "us-east-1b", "us-east-1c"]
-    subnets_names = ["test", "test2", "test3"]
   }
   description = "Public Subnets variables"
   type        = map(list(string))
@@ -60,4 +59,22 @@ variable "nat-gw-tags" {
   }
   description = "Nat gateway tags"
   type        = map(string)
+}
+
+#Private subnets variables
+variable "private-subnets-tags" {
+  default     = {
+    Account = "connect2"
+  }
+  description = "Private Subnets tags"
+  type        = map(string)
+}
+
+variable "private-subnets" {
+  default     = {
+    subnets_cidr_block = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+    subnet_az = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  }
+  description = "Private Subnets variables"
+  type        = map(list(string))
 }
