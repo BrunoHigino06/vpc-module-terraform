@@ -18,9 +18,9 @@ variable "vpc-tags" {
 }
 
 #Internet gateway variables
-variable "gw-condictional" {
+variable "igw-condictional" {
     type = bool
-    default = true
+    default = false
     description = "Conctional to check if a internet will be create (if false that will create a nat gateway)"
 }
 
@@ -36,10 +36,10 @@ variable "igw-tags" {
 #Public subnets variables
 variable "public-subnets-tags" {
   default     = {
-    Account = ["connect2"]
+    Account = "connect2"
   }
   description = "Public Subnets tags"
-  type        = map(list(string))
+  type        = map(string)
 }
 
 variable "public-subnets" {
