@@ -105,3 +105,14 @@ resource "aws_route_table" "private-route-tables" {
 }
 
 #Default route for the private route tables
+resource "aws_route" "NatRoute" {
+  count = var.igw-condictional ? 0 : var.private-route-table-azs
+  route_table_id = aws_route_table.private-route-tables[count.index].id
+  gateway_id = aws_nat_gateway.nat-gw[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  depends_on = [
+    aws_route_table.private-route-tables,
+    aws_nat_gateway.nat-gw
+
+  ]
+}
