@@ -46,6 +46,7 @@ resource "aws_subnet" "plublic-subnets" {
 }
 
 #Nat gateway resouces
+#Eip resource
 resource "aws_eip" "NatEip" {
   count = length(var.public-subnets.subnets_cidr_block)
   vpc      = true
@@ -55,6 +56,7 @@ resource "aws_eip" "NatEip" {
   }
 }
 
+#Nat resource
 resource "aws_nat_gateway" "nat-gw" {
   count = var.igw-condictional ? 0 : length(var.public-subnets.subnets_cidr_block)
   allocation_id = aws_eip.NatEip[count.index].id
@@ -83,4 +85,31 @@ resource "aws_subnet" "private-subnets" {
     depends_on = [
       aws_vpc.vpc
     ]
+}
+
+#Private Route table resources
+#Route table resource
+resource "aws_route_table" "private-route-table" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = merge(
+      var.private-route-table-tags,
+      {
+        Name = var.private-route-table-name
+      },
+      )
+  depends_on = [
+    aws_vpc.vpc
+  ]
+}
+
+#Default route for the private route table
+resource "aws_route" "default-private-route" {
+  count = var.igw-condictional ? 0 : 1
+  route_table_id = aws_route_table.private-route-table.id
+  gateway_id = aws_nat_gateway.nat-gw.id
+  destination_cidr_block = "0.0.0.0/0"
+  depends_on = [
+
+  ]
 }

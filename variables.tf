@@ -78,3 +78,17 @@ variable "private-subnets" {
   description = "Private Subnets variables"
   type        = map(list(string))
 }
+
+#Private route table variables
+variable "private-route-table-tags" {
+  default     = {
+    Account = "connect2"
+  }
+  description = "Private route table tags"
+  type        = map(string)
+}
+
+variable "private-route-table-name" {
+  type = list(string)
+  description = "Name of the private route table"
+}
