@@ -110,6 +110,6 @@ resource "aws_route" "default-private-route" {
   gateway_id = aws_nat_gateway.nat-gw.id
   destination_cidr_block = "0.0.0.0/0"
   depends_on = [
-
+    aws_route_table.private-route-table
   ]
 }
