@@ -83,12 +83,14 @@ variable "private-subnets" {
 variable "private-route-table-tags" {
   default     = {
     Account = "connect2"
+    Name = "Private"
   }
   description = "Private route table tags"
   type        = map(string)
 }
 
-variable "private-route-table-name" {
-  type = list(string)
-  description = "Name of the private route table"
+variable "private-route-table-azs" {
+  type = number
+  default = 3
+  description = "Number of the avilability zones that will be used (it will create one private route table for each AZ where has a nat gateway)"
 }

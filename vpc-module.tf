@@ -88,14 +88,15 @@ resource "aws_subnet" "private-subnets" {
 }
 
 #Private Route table resources
-#Route table resource
-resource "aws_route_table" "private-route-table" {
+#Route tables resource
+resource "aws_route_table" "private-route-tables" {
+  count = var.private-route-table-azs
   vpc_id = aws_vpc.vpc.id
 
   tags = merge(
       var.private-route-table-tags,
       {
-        Name = var.private-route-table-name
+        Name = "Private${count.index}"
       },
       )
   depends_on = [
@@ -103,14 +104,4 @@ resource "aws_route_table" "private-route-table" {
   ]
 }
 
-#Default route for the private route table
-resource "aws_route" "default-private-route" {
-  count = var.igw-condictional ? 0 : 1
-  route_table_id = aws_route_table.private-route-table.id
-  gateway_id = aws_nat_gateway.nat-gw.id
-  destination_cidr_block = "0.0.0.0/0"
-  depends_on = [
-    aws_route_table.private-route-table
-  ]
-}
-
+#Default route for the private route tables
