@@ -1,14 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-
-  default_tags {
-    tags = {
-      Environment     = "Test"
-      Service         = "Example"
-    }
-  }
-}
-
 #VPC resource
 resource "aws_vpc" "vpc" {
   cidr_block       = var.vpc-cidr_block
@@ -48,7 +37,7 @@ resource "aws_subnet" "plublic-subnets" {
 #Nat gateway resouces
 #Eip resource
 resource "aws_eip" "NatEip" {
-  count = length(var.public-subnets.subnets_cidr_block)
+  count = var.igw-condictional ? 0 : length(var.public-subnets.subnets_cidr_block)
   vpc      = true
 
   tags = {
